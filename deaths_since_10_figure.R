@@ -7,7 +7,7 @@ library(jcolors)
 
 #the countries we want to look at
 countries <- c('US','China','Italy','Spain','Iran','France','Korea, South','Japan','United Kingdom')
-
+last_date <- 40 #how many days after 10 days you want to go
 
 #get data and clean it up
 d <- read.csv(url("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv")) %>%
@@ -38,7 +38,7 @@ agg <- d %>% group_by(country, date) %>%
 #for labeling countries at the end
 plot <- agg %>%
   filter(country %in% countries) %>%
-  filter(days_10 <= 35) %>% 
+  filter(days_10 <= last_date) %>% 
   group_by(country) %>%
   mutate(last = ifelse(row_number() == n(), 1, 0))
   
@@ -50,8 +50,8 @@ plot %>%
   theme_minimal() +
   labs(x = "Days since 10th death",
        y = "Total deaths",
-       caption = "Figure: @benbbaldwin | Data: @JHU",
-       title = "COVID-19 Tracker: Deaths Since 10th Death") +
+       caption = "Figure: @benbbaldwin | Data: @JHU https://github.com/CSSEGISandData/COVID-19",
+       title = "COVID-19 Tracker: Mortality Progression Since 10th Death") +
   theme_bw() +
   theme(
     legend.position = "none",
