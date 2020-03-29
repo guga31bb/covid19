@@ -4,6 +4,8 @@ library(jcolors)
 #library(patchwork)
 source("clean_data.R")
 
+#get_data is called from clean_data.R
+#40 is how many days to keep after 10th death
 agg <- get_data(40) 
 
 agg_us <- agg %>%
@@ -17,7 +19,7 @@ recent_world = max(agg_world$date)
 recent_county = max(agg_county$date)
 
 #check which states have the highest death count
-#keep the top 10 to show in plot
+#keep the top 10 to show in plot. and also south korea 
 top_10_us <- agg_us %>% filter(last==1) %>% arrange(-deaths) %>%
   filter(row_number() <= 10) %>%
   select(state)
