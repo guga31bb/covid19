@@ -1,4 +1,4 @@
-# Making some basic coronavirus mortality figures
+# COVID-19 Mortality Progressions
 
 ## Code
 * make_figures.R: makes figures of deaths since 10th death for countries around the world, US states, and US counties
