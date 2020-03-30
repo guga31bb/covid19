@@ -84,9 +84,9 @@ keep_top <- function(data, n) {
 make_figure <- function(data_set, source) {
   
   if (source == 'nyt') {
-    cap = "@NYT https://github.com/nytimes/covid-19-data"
+    cap = "@nytimes https://github.com/nytimes/covid-19-data"
   } else {
-    cap = "@JHU https://github.com/CSSEGISandData/COVID-19"
+    cap = "@JHUSystems https://github.com/CSSEGISandData/COVID-19"
   }
   
   g <- 
@@ -114,10 +114,10 @@ make_figure <- function(data_set, source) {
       size = 5,
     ) +
     geom_text_repel(
-      data = filter(data_set, last == 1 & deaths < .5 * max(data_set$deaths)),
+      data = filter(data_set, last == 1 & deaths <= .5 * max(data_set$deaths)),
       color = "black",
-      nudge_x = -2,
-      nudge_y = .1 * max(data_set$deaths),
+      nudge_x = -1,
+      nudge_y = .08 * max(data_set$deaths),
       size = 5,
     ) +
     annotate("text",x=4, y= .8 * max(data_set$deaths), label = paste0("Most recent update:\n",month(max(data_set$date)),"-",day(max(data_set$date))), color="red", size=5)
