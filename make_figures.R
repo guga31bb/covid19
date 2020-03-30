@@ -23,11 +23,11 @@ all %>% filter(type =='us') %>% select(date) %>% arrange(date) %>% tail(1)
 all %>% filter(type =='world') %>% select(date) %>% arrange(date) %>% tail(1)
 
 u
-ggsave("figures/deaths_since_10_states.png", dpi=700, width = 16, height = 8)
+ggsave("figures/deaths_us_states.png", dpi=700, width = 16, height = 8)
 
 c
-ggsave("figures/deaths_since_10_county.png", dpi=700, width = 16, height = 8)
+ggsave("figures/deaths_us_counties.png", dpi=700, width = 16, height = 8)
 
 w
-ggsave("figures/deaths_since_10.png", dpi=700, width = 16, height = 8)
+ggsave("figures/deaths_world.png", dpi=700, width = 16, height = 8)
 
