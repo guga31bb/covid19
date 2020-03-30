@@ -8,13 +8,13 @@ all <- get_data(40)
 
 #keep the top X states/counties/countries with most deaths to show in plot. and also south korea for the country one
 u <- all %>% filter(type == 'us') %>%
-  keep_top(10) %>%
+  keep_top("deaths", 10, c("Washington")) %>%
   make_figure('nyt')
 w <- all %>% filter(type == 'world') %>%
-  keep_top(10) %>%
+  keep_top("deaths", 10, c("Korea, South")) %>%
   make_figure('jhu')
 c <- all %>% filter(type == 'county') %>%
-  keep_top(6) %>%
+  keep_top("deaths", 6, c("King, Washington")) %>%
   make_figure('nyt')
 
 #day of last nyt update
@@ -30,3 +30,4 @@ ggsave("figures/deaths_since_10_county.png", dpi=700, width = 16, height = 8)
 
 w
 ggsave("figures/deaths_since_10.png", dpi=700, width = 16, height = 8)
+

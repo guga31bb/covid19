@@ -5,6 +5,7 @@ library(lubridate)
 library(ggplot2)
 library(ggrepel)
 library(jcolors)
+library(scales)
 
 #gets the country-level stuff from JHU and US state- and county- level from NYT
 #last_date = how many days after initial date of 10th death to look at
@@ -66,13 +67,20 @@ get_data <- function(last_date) {
 }
 
 
-#take data and keep the top n highest states/countries/counties
-keep_top <- function(data, n) {
-  
-  d <- data %>% filter(last==1) %>% arrange(-deaths) %>%
-    filter(row_number() <= n | state %in% c("Korea, South")) %>%
-    select(state)
-  
+#take data and keep the top n highest states/countries/counties plus any extras specified
+keep_top <- function(data, outcome, n, extras) {
+
+  #passing variable names as arguments is impossibly hard so just do this badly
+  if (outcome == "deaths") {
+    d <- data %>% filter(last==1) %>% arrange(-deaths) %>%
+      filter(row_number() <= n | state %in% extras) %>%
+      select(state)
+  } else{
+    d <- data %>% filter(last==1) %>% arrange(-hospitalized) %>%
+      filter(row_number() <= n | state %in% extras) %>%
+      select(state)
+  }
+
   data <- data %>%
     inner_join(d, by="state")
   
@@ -106,6 +114,7 @@ make_figure <- function(data_set, source) {
       axis.text.x=element_text(hjust=0.5)
     )   +
     scale_color_jcolors(palette="pal8") +
+    scale_y_continuous(breaks=pretty_breaks(n = 5)) +
     geom_text_repel(
       data = filter(data_set, last == 1 & deaths > .5 * max(data_set$deaths)),
       color = "black",
