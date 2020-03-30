@@ -8,4 +8,4 @@
 ![world figure](https://raw.githubusercontent.com/guga31bb/covid19/master/figures/deaths_since_10.png)
 
 ## US states figure
-![US state figure](https://raw.githubusercontent.com/guga31bb/covid19/master/figures/deaths_since_10_states.png)
+![US state figure](https://github.com/guga31bb/covid19/blob/master/figures/deaths_since_10_states.png)
