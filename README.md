@@ -5,7 +5,7 @@
 * Data sources: [JHU data](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series) and [NYT data](https://github.com/nytimes/covid-19-data)
 
 ## World figure
-![world figure](https://raw.githubusercontent.com/guga31bb/covid19/master/figures/deaths_since_10.png)
+![world figure](https://github.com/guga31bb/covid19/raw/master/figures/deaths_world.png)
 
 ## US states figure
-![US state figure](https://github.com/guga31bb/covid19/blob/master/figures/deaths_since_10_states.png)
+![US state figure](https://github.com/guga31bb/covid19/raw/master/figures/deaths_us_states.png)
