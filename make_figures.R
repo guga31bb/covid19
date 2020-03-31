@@ -8,26 +8,37 @@ all <- get_data(40)
 
 #keep the top X states/counties/countries with most deaths to show in plot. and also south korea for the country one
 u <- all %>% filter(type == 'us') %>%
-  keep_top("deaths", 10, c("Washington")) %>%
-  make_figure('nyt')
+  keep_top("deaths", 10, c("Washington")) 
 w <- all %>% filter(type == 'world') %>%
-  keep_top("deaths", 10, c("Korea, South")) %>%
-  make_figure('jhu')
+  keep_top("deaths", 10, c("Korea, South"))
 c <- all %>% filter(type == 'county') %>%
-  keep_top("deaths", 6, c("King, Washington")) %>%
-  make_figure('nyt')
+  keep_top("deaths", 5, c("King, Washington")) 
 
 #day of last nyt update
 all %>% filter(type =='us') %>% select(date) %>% arrange(date) %>% tail(1)
 #day of last jhu update
 all %>% filter(type =='world') %>% select(date) %>% arrange(date) %>% tail(1)
 
-u
+
+## make figures: normal scale
+u %>% make_figure('nyt')
 ggsave("figures/deaths_us_states.png", dpi=700, width = 16, height = 8)
 
-c
+c %>% make_figure('nyt')
 ggsave("figures/deaths_us_counties.png", dpi=700, width = 16, height = 8)
 
-w
+w %>% make_figure('jhu')
 ggsave("figures/deaths_world.png", dpi=700, width = 16, height = 8)
+
+## make figures: log scale
+u %>% make_figure_log('nyt')
+ggsave("figures/deaths_log_us_states.png", dpi=700, width = 16, height = 8)
+
+c %>% make_figure_log('nyt')
+ggsave("figures/deaths_log_us_counties.png", dpi=700, width = 16, height = 8)
+
+w %>% make_figure_log('jhu')
+ggsave("figures/deaths_log_world.png", dpi=700, width = 16, height = 8)
+
+
 

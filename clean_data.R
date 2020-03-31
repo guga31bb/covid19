@@ -137,3 +137,50 @@ make_figure <- function(data_set, source) {
 
 
 
+make_figure_log <- function(data_set, source) {
+  
+  if (source == 'nyt') {
+    cap = "@nytimes https://github.com/nytimes/covid-19-data"
+  } else {
+    cap = "@JHUSystems https://github.com/CSSEGISandData/COVID-19"
+  }
+  
+  g <- 
+    data_set %>% 
+    ggplot(aes(x=days_10, y=deaths, group = state, color = state, label = state)) +
+    geom_point(size=4, shape=16) +
+    geom_line(size = 2) +
+    theme_minimal() +
+    labs(x = "Days since 10th death",
+         y = "Total deaths",
+         caption = paste("Figure: @benbbaldwin | Data:", cap),
+         title = "COVID-19 Tracker: Mortality Progression Since 10th Death, LOG SCALE") +
+    theme_bw() +
+    theme(
+      legend.position = "none",
+      plot.title = element_text(size = 18, hjust = 0.5),
+      axis.text.x=element_text(hjust=0.5)
+    )   +
+    scale_color_jcolors(palette="pal8") +
+    annotation_logticks(sides = "l") +
+    scale_y_log10() +
+    geom_text_repel(
+      data = filter(data_set, last == 1 & deaths > .5 * max(data_set$deaths)),
+      color = "black",
+      nudge_x = -2,
+      nudge_y = -0,
+      size = 5,
+    ) +
+    geom_text_repel(
+      data = filter(data_set, last == 1 & deaths <= .5 * max(data_set$deaths)),
+      color = "black",
+      nudge_x = -2,
+      nudge_y = 0,
+      size = 5,
+    ) +
+    annotate("text",x=4, y= .6 * max(data_set$deaths), label = paste0("Most recent update:\n",month(max(data_set$date)),"-",day(max(data_set$date))), color="red", size=5)
+  
+  return(g)
+  
+}
+
