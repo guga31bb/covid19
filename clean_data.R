@@ -148,8 +148,8 @@ make_figure_log <- function(data_set, source) {
   g <- 
     data_set %>% 
     ggplot(aes(x=days_10, y=deaths, group = state, color = state, label = state)) +
-    geom_point(size=4, shape=16) +
-    geom_line(size = 2) +
+    geom_point(size=4, shape=16, alpha = .6) +
+    geom_line(size = 2, alpha = .6) +
     theme_minimal() +
     labs(x = "Days since 10th death",
          y = "Total deaths",
@@ -167,20 +167,21 @@ make_figure_log <- function(data_set, source) {
     geom_text_repel(
       data = filter(data_set, last == 1 & deaths > .5 * max(data_set$deaths)),
       color = "black",
-      nudge_x = -2,
+      nudge_x = -7,
       nudge_y = -0,
       size = 5,
     ) +
     geom_text_repel(
       data = filter(data_set, last == 1 & deaths <= .5 * max(data_set$deaths)),
       color = "black",
-      nudge_x = -2,
-      nudge_y = 0,
+      nudge_x = -7,
+      nudge_y = -0,
       size = 5,
     ) +
-    annotate("text",x=4, y= .6 * max(data_set$deaths), label = paste0("Most recent update:\n",month(max(data_set$date)),"-",day(max(data_set$date))), color="red", size=5)
+    annotate("text",x=6, y= .5 * max(data_set$deaths), label = paste0("Most recent update:\n",month(max(data_set$date)),"-",day(max(data_set$date))), color="red", size=5)
   
   return(g)
   
 }
+
 
