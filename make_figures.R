@@ -12,7 +12,9 @@ u <- all %>% filter(type == 'us') %>%
 w <- all %>% filter(type == 'world') %>%
   keep_top("deaths", 10, c("Korea, South"))
 c <- all %>% filter(type == 'county') %>%
-  keep_top("deaths", 5, c("King, Washington")) 
+  keep_top("deaths", 7, c("Seattle-Tacoma-Bellevue, WA")) 
+c$state <- gsub( ",.*$", "", c$state )
+
 
 #day of last nyt update
 all %>% filter(type =='us') %>% select(date) %>% arrange(date) %>% tail(1)

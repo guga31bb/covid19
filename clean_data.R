@@ -42,16 +42,21 @@ get_data <- function(last_date) {
     select(date, state, deaths) %>%
     mutate(type = 'us')
   
-  #county-level US data from nyt
+  #get county-to-msa crosswalk
+  xwalk <- readRDS("data/county_to_MSA.rds")
+  
+  #county-level US data from nyt, aggregate up to CBSAs
   d2 <- read.csv(url("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv")) %>%
     mutate(
-      date = as.Date(date)
+      date = as.Date(date),
+      fips = ifelse(county == "New York City", 36005, fips)
     ) %>%
-    arrange(state, county, date) %>%
-    mutate(state = paste0(county, ", ", state)) %>%
-    select(date, state, deaths) %>%
-    mutate(type = 'county')
-  
+    inner_join(xwalk, by="fips") %>%
+    group_by(cbsa, date) %>%
+    summarize(deaths = sum(deaths)) %>%
+    mutate(type = 'county') %>% ungroup() %>%
+    dplyr::rename(state = cbsa)
+    
   #bind together
   data <- bind_rows(agg, d1, d2) %>%
     mutate(d10 = ifelse(deaths >= 10, 1, 0)) %>%
@@ -100,8 +105,8 @@ make_figure <- function(data_set, source) {
   g <- 
     data_set %>% 
     ggplot(aes(x=days_10, y=deaths, group = state, color = state, label = state)) +
-    geom_point(size=4, shape=16) +
-    geom_line(size = 2) +
+    geom_point(size=4, shape=16, alpha = .6) +
+    geom_line(size = 2, alpha = .6) +
     theme_minimal() +
     labs(x = "Days since 10th death",
          y = "Total deaths",
@@ -114,7 +119,7 @@ make_figure <- function(data_set, source) {
       axis.text.x=element_text(hjust=0.5)
     )   +
     scale_color_jcolors(palette="pal8") +
-    scale_y_continuous(breaks=pretty_breaks(n = 5)) +
+    scale_y_continuous(breaks=pretty_breaks(n = 10)) +
     geom_text_repel(
       data = filter(data_set, last == 1 & deaths > .5 * max(data_set$deaths)),
       color = "black",
@@ -129,7 +134,7 @@ make_figure <- function(data_set, source) {
       nudge_y = .08 * max(data_set$deaths),
       size = 5,
     ) +
-    annotate("text",x=4, y= .8 * max(data_set$deaths), label = paste0("Most recent update:\n",month(max(data_set$date)),"-",day(max(data_set$date))), color="red", size=5)
+    annotate("text",x=6, y= .8 * max(data_set$deaths), label = paste0("Most recent update:\n",month(max(data_set$date)),"-",day(max(data_set$date))), color="red", size=5)
   
   return(g)
   
@@ -184,4 +189,23 @@ make_figure_log <- function(data_set, source) {
   
 }
 
+
+get_xwalk <- function() {
+  
+  # h <- read.csv('https://data.nber.org/cbsa-msa-fips-ssa-county-crosswalk/cbsatocountycrosswalk.csv')
+  # 
+  # xwalk <- h %>% select(fipscounty, msa, msaname) %>%
+  #   dplyr::rename(fips = fipscounty)
+  # 
+  
+  h <- read.csv('https://opendata.arcgis.com/datasets/47c5474c19cb4f4d9f102a84b4b8e462_2.csv') %>%
+    dplyr::rename(
+      fips = GEOID, cbsa = CBSA_TITLE
+    ) %>%
+    select(fips, cbsa) %>%
+    filter(cbsa!="")
+  
+  saveRDS(xwalk, "data/county_to_MSA.rds")
+  
+}
 
