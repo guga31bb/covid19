@@ -45,7 +45,8 @@ get_data <- function(last_date) {
     mutate(type = 'us')
   
   #get county-to-msa crosswalk
-  xwalk <- readRDS("data/county_to_MSA.rds")
+  #xwalk <- readRDS("data/county_to_MSA.rds")
+  xwalk <- readRDS(url('https://github.com/guga31bb/covid19/raw/master/data/county_to_MSA.rds'))
   
   #county-level US data from nyt, aggregate up to CBSAs
   d2 <- read.csv(url("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv")) %>%
