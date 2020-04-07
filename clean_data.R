@@ -6,6 +6,8 @@ library(ggplot2)
 library(ggrepel)
 library(jcolors)
 library(scales)
+library(viridis)
+
 
 #gets the country-level stuff from JHU and US state- and county- level from NYT
 #last_date = how many days after initial date of 10th death to look at
@@ -119,6 +121,8 @@ make_figure <- function(data_set, source) {
       axis.text.x=element_text(hjust=0.5)
     )   +
     scale_color_jcolors(palette="pal8") +
+    #scale_color_viridis(discrete = TRUE)+
+    #scale_colour_viridis_d(option = "plasma") +
     scale_y_continuous(breaks=pretty_breaks(n = 10)) +
     geom_text_repel(
       data = filter(data_set, last == 1 & deaths > .5 * max(data_set$deaths)),
@@ -142,7 +146,7 @@ make_figure <- function(data_set, source) {
 
 
 
-make_figure_log <- function(data_set, source) {
+make_figure_log <- function(data_set, source, nudge) {
   
   if (source == 'nyt') {
     cap = "@nytimes https://github.com/nytimes/covid-19-data"
@@ -167,19 +171,20 @@ make_figure_log <- function(data_set, source) {
       axis.text.x=element_text(hjust=0.5)
     )   +
     scale_color_jcolors(palette="pal8") +
+    #scale_color_viridis(discrete = TRUE)+
     annotation_logticks(sides = "l") +
     scale_y_log10() +
     geom_text_repel(
       data = filter(data_set, last == 1 & deaths > .5 * max(data_set$deaths)),
       color = "black",
-      nudge_x = -7,
+      nudge_x = nudge,
       nudge_y = -0,
       size = 5,
     ) +
     geom_text_repel(
       data = filter(data_set, last == 1 & deaths <= .5 * max(data_set$deaths)),
       color = "black",
-      nudge_x = -7,
+      nudge_x = nudge,
       nudge_y = -0,
       size = 5,
     ) +
@@ -205,7 +210,7 @@ get_xwalk <- function() {
     select(fips, cbsa) %>%
     filter(cbsa!="")
   
-  saveRDS(xwalk, "data/county_to_MSA.rds")
+  saveRDS(h, "data/county_to_MSA.rds")
   
 }
 
