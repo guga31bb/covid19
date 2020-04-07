@@ -3,10 +3,6 @@
 
 source("clean_data.R")
 
-#makes a crosswalk file used in the get_data() function
-#saved in "data/county_to_MSA.rds"
-get_xwalk()
-
 #argument is how many days to keep after 10th death
 all <- get_data(45) 
 
