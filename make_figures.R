@@ -4,7 +4,7 @@
 source("clean_data.R")
 
 #argument is how many days to keep after 10th death
-all <- get_data(60) 
+all <- get_data(65) 
 
 #keep the top X states/counties/countries with most deaths to show in plot. and also south korea for the country one
 u <- all %>% filter(type == 'us') %>%
