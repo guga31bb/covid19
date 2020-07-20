@@ -5,6 +5,7 @@ library(lubridate)
 library(ggplot2)
 library(jcolors)
 library(scales)
+library(kableExtra)
 # library(viridis)
 
 #####################################################################################
@@ -28,14 +29,31 @@ get_figure <- function(g) {
     theme(
       # legend.position = "none",
       plot.title = element_text(size = 24, hjust = 0.5),
-      legend.position = c(.90, .85),
+      legend.position = c(.85, .85),
       legend.title = element_text(size = 18),
       legend.text = element_text(size = 16),
       axis.text.x=element_text(hjust=0.5) 
     ) +
     annotate("text",x=as.Date('2020-03-24'), y= .8 * max(g$new_cases_prev7, na.rm = T), label = paste0("Most recent update:\n",month(max(g$date)),"-",day(max(g$date))), color="red", size=5)
+}
+
+
+#helper function to create all plays table
+get_table <- function(g) {
   
+  #do stuff for the all plays table
+  table <- g %>% 
+    arrange(county, date) %>%
+    select(county, date, new_cases, new_cases_prev7) %>%
+    dplyr::rename(
+      County = county, Date = date, New_Cases = new_cases, Weekly_Cases = new_cases_prev7
+    ) %>%
+    kable("html") %>%
+    kable_styling(
+      bootstrap_options = c("striped", "hover", "responsive"),
+      fixed_thead = T)
   
+  return(table)
 }
 
 
@@ -60,8 +78,10 @@ data <- read_csv(url("https://raw.githubusercontent.com/nytimes/covid-19-data/ma
   ungroup() %>%
   inner_join(xwalk, by="fips") %>%
   filter(
-    cbsa == 'Washington-Arlington-Alexandria, DC-VA-MD-WV'
-  )
+    cbsa == 'Washington-Arlington-Alexandria, DC-VA-MD-WV',
+    !is.na(new_cases_prev7)
+  ) %>%
+  arrange(county, date)
 tictoc::toc()
 
 
@@ -118,7 +138,9 @@ ui <- fluidPage(
       
       # tags$h2('COVID-19 Cases is DC Region', align = "center"),
       
-      plotOutput(outputId = "plot1", height = 'auto')
+      plotOutput(outputId = "plot1", height = 'auto'),
+      
+      tableOutput(outputId = "table1")
       
       
     )
@@ -157,6 +179,13 @@ server <- function(input, output, session) {
   }, height = function() {
     (9/16) * session$clientData$output_plot1_width
   })
+  
+  
+  #all plays
+  output$table1 <- reactive({
+    get_table(fullInput())
+  })
+  
   
 
 }
